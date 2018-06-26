@@ -138,11 +138,7 @@ class OracleGrammar extends Grammar
      */
     protected function compileTableExpression($sql, $constraint, $query)
     {
-        if ($query->limit > 1) {
-            return "select t2.* from ( select rownum AS \"rn\", t1.* from ({$sql}) t1 ) t2 where t2.\"rn\" {$constraint}";
-        }
-
-        return "select * from ({$sql}) where rownum {$constraint}";
+        return "select t2.* from ( select rownum AS \"rn\", COUNT(*) OVER () \"rt\", t1.* from ({$sql}) t1 ) t2 where t2.\"rn\" {$constraint}";
     }
 
     /**
